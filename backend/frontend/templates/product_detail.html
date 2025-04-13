@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Product Image Section -->
+        <div class="col-md-6 text-center">
+            <img src="{{ product.image.url }}" class="product-img" alt="Product Image">
+        </div>
+
+        <!-- Product Details Section -->
+        <div class="col-md-6">
+            <div class="product-details">
+                <h2 class="product-title">{{ product.model }}</h2>
+                <h5 class="price">Price : ₹{{ product.price }}</h5>
+
+                <form id="actionForm" method="POST">
+                    {% csrf_token %}
+                
+                    <!-- Size Selection -->
+                    <h4 class="label">Sizes :</h4>
+                    <div class="size-container">
+                        {% for size in sizes %}
+                        <div class="size-item">
+                            <input type="radio" name="selected_size" value="{{ size }}" id="size-{{ size }}">
+                            <label for="size-{{ size }}">{{ size }}</label>
+                        </div>
+                        {% empty %}
+                        <p>No sizes available</p>
+                        {% endfor %}
+                    </div>
+                
+                    <!-- Fabric Selection -->
+                    <h4 class="label">Fabrics :</h4>
+                    <div class="fabric-container">
+                        {% for fabric in fabrics %}
+                        <div class="fabric-item">
+                            <input type="radio" name="selected_fabric" value="{{ fabric.id }}" id="fabric-{{ fabric.id }}">
+                            <label for="fabric-{{ fabric.id }}">
+                                <img src="{{ fabric.image.url }}" alt="{{ fabric.name }}">
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <input type="hidden" name="action" id="actionInput">
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
+                    <input type="hidden" id="selectedSizeInput" name="selected_size">
+                    <input type="hidden" id="selectedFabricInput" name="selected_fabric">
+                    <!-- Error message area -->
+                    <p id="fabricError" class="error-text">⚠ Please select a fabric before proceeding.</p>
+                    <p id="sizeError" class="error-text">⚠ Please select a size before proceeding.</p>
+                
+                    <!-- Action Buttons -->
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary mx-1 d-flex align-items-center justify-content-center gap-2 hover-text"
+                        onclick="submitForm('{% url 'add_to_cart' product.id %}')">
+                            <i class="bi bi-cart fs-5"></i>
+                            <span class="hover-label">Cart</span>
+                        </button>
+                        <button type="button" class="btn btn-primary mx-1 d-flex align-items-center justify-content-center gap-2 hover-text" 
+                        onclick="submitForm('{% url 'process_payment' product.id %}')">
+                            <i class="bi bi-cash-coin"></i>
+                            <span class="hover-label">Purchase</span>
+                        </button> 
+                        <button type="button" class="btn btn-warning d-flex align-items-center justify-content-center gap-2 hover-text" 
+                        onclick="submitForm('{% url 'customize_product' product.id %}')">
+                            <i class="bi bi-pencil"></i>
+                            <span class="hover-label">Customze</span>
+                        </button>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    body {
+        background: url("https://i.pinimg.com/736x/61/20/6d/61206d8c1f03bb0205815bd0005fb4cc.jpg") no-repeat center center fixed;
+        background-size: cover;
+    }
+    /* General Styles */
+    .container {
+        max-width: 900px;
+    }
+
+    /* Product Image */
+    .product-img {
+        width: 100%;
+        max-width: 400px;
+        max-height: 400px;
+        object-fit: contain;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Product Details */
+    .product-details {
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .price {
+        font-size: 1.8rem;
+        /* font-weight: bold; */
+        color: #040404;
+        margin-bottom: 15px;
+    }
+
+    .label {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-top: 15px;
+        color: #333;
+    }
+
+    /* Size Selection */
+    .size-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .size-item {
+        text-align: center;
+        width: 60px;
+        position: relative;
+    }
+
+    .size-item input[type="radio"] {
+        display: none;
+    }
+
+    .size-item label {
+    display: block;
+    padding: 8px 12px;
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    color: black; /* Changed to black */
+    transition: all 0.2s ease-in-out;
+}
+
+.size-item input[type="radio"]:checked + label {
+    background: #007bff;
+    color: white; /* Keeps text white when selected */
+    transform: scale(1.1);
+}
+
+
+    /* Fabric Selection */
+    .fabric-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .fabric-item {
+        text-align: center;
+        width: 100px;
+        position: relative;
+    }
+
+    .fabric-item img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.15);
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .fabric-item input[type="radio"] {
+        display: none;
+    }
+
+    .fabric-item label {
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .fabric-item input[type="radio"]:checked + label img {
+        border: 3px solid #007bff;
+        transform: scale(1.1);
+        box-shadow: 0px 5px 10px rgba(0, 123, 255, 0.3);
+    }
+
+    /* Error Message */
+    .error-text {
+        color: red;
+        font-weight: bold;
+        font-size: 1rem;
+        display: none;
+        margin-top: 10px;
+    }
+
+    /* Buttons */
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .button-group button,
+    .button-group a {
+        flex: 1;
+        border-radius: 8px;
+        font-size: 1rem;
+        padding: 10px;
+        text-align: center;
+        font-weight: 600;
+        transition: all 0.3s ease-in-out;
+    }
+    .hover-label {
+            display: none;
+            transition: 0.3s ease;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .hover-text:hover .hover-label {
+            display: inline;
+        }
+</style>
+
+<script>
+    function submitForm(actionUrl) {
+        let selectedSize = document.querySelector('input[name="selected_size"]:checked');
+        let selectedFabric = document.querySelector('input[name="selected_fabric"]:checked');
+        let fabricError = document.getElementById("fabricError");
+        let sizeError = document.getElementById("sizeError");
+        let hasError = false;
+
+        // Validate Size
+        if (!selectedSize) {
+            sizeError.style.display = "block";
+            hasError = true;
+        } else {
+            sizeError.style.display = "none";
+            document.getElementById("selectedSizeInput").value = selectedSize.value;
+        }
+
+        // Validate Fabric
+        if (!selectedFabric) {
+            fabricError.style.display = "block";
+            hasError = true;
+        } else {
+            fabricError.style.display = "none";
+            document.getElementById("selectedFabricInput").value = selectedFabric.value;
+        }
+
+        if (!hasError) {
+            document.getElementById("actionForm").action = actionUrl;
+            document.getElementById("actionForm").submit();
+        }
+    }
+</script>
+{% endblock %}

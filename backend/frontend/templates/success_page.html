@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script>
+        setTimeout(function() {
+            window.location.href = "/";
+        }, 3000); // Redirects to the home page after 3 seconds
+    </script>
+    <style>
+        .success-container {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-align: center;
+            background: #f8f9fa;
+        }
+        .checkmark {
+            font-size: 80px;
+            color: #28a745;
+        }
+        .message {
+            font-size: 24px;
+            margin-top: 10px;
+            color: #333;
+        }
+        .redirect-info {
+            margin-top: 10px;
+            color: #666;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="success-container">
+        <div class="checkmark">✔</div>
+        <h2 class="message">Payment Successful!</h2>
+        <p class="redirect-info">Redirecting you to the home page in 3 seconds...</p>
+    </div>
+
+</body>
+</html>
+{% endblock %}

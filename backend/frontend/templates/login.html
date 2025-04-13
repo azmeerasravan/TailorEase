@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - TailorEase{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="glass-card p-4 rounded-4 shadow-lg">
+        <h2 class="text-center mb-4 text-white">Welcome Back</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <h4>Login</h4>
+            <div class="mb-3">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+            </div>
+            <div class="mb-3">
+                {{ form.password.label_tag }}
+                {{ form.password }}
+            </div>
+            <button type="submit" class="btn-glow w-100">Login</button>
+        </form>
+        <p class="mt-3 text-center text-white">
+            Don't have an account? 
+            <a href="{% url 'signup' %}" class="text-decoration-none link-hover">Sign up</a>
+        </p>
+    </div>
+</div>
+
+<style>
+    /* Full-screen background with gradient */
+    body {
+        background: url("https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIzLTA3L3Vwd2s2MTg0MzM0NC13aWtpbWVkaWEtaW1hZ2UtbGtocWw2YWIuanBn.jpg") no-repeat center center fixed;
+        background-size: cover;
+    }
+    .vh-100 {
+        height: 100vh;
+        background: linear-gradient(135deg, w-100, #050505);
+    }
+    div{
+        color: white;
+    }
+    /* Glassmorphic Card Effect */
+    .glass-card {
+        width: 380px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0px 0px 15px rgba(255, 255, 255, 0.2);
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    /* Input Styling */
+    input {
+        width: 100%;
+        padding: 10px;
+        background: seashell;
+        border: none;
+        border-radius: 8px;
+        color: black;
+        font-size: 16px;
+        transition: all 0.3s ease-in-out;
+    }
+    h4{
+        color: white;
+    }
+    input:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Glowing Submit Button */
+    .btn-glow {
+        background: linear-gradient(90deg, #ff5733, #ff9966);
+        color: black;
+        border: none;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 0 10px rgba(255, 87, 51, 0.5);
+    }
+
+    .btn-glow:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 15px rgba(255, 87, 51, 0.8);
+    }
+
+    /* Link Hover Effect */
+    .link-hover {
+        color: #FFD700;
+        transition: color 0.3s ease-in-out;
+    }
+
+    .link-hover:hover {
+        color: #FFA500;
+        text-decoration: underline;
+    }
+
+    /* Fade-in Animation */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load widget_tweaks %}
+
+<style>
+    body {
+        background: url("https://plus.unsplash.com/premium_photo-1661281366900-88b41445a004?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8Y2xvdGhpbmclMjBtb2RlbHxlbnwwfHwwfHx8MA%3D%3D") no-repeat center center fixed;
+        background-size: cover;
+        color: #050505;
+    }
+
+    .profile-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .card {
+        width: 65%;
+        max-width: 750px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        border-radius: 12px;
+        padding: 25px;
+        animation: fadeIn 1s ease-in-out;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .card:hover {
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(20px);
+    }
+
+    .card-header {
+        background: rgba(255, 255, 255, 0.2);
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        padding: 15px;
+        color: #050505;
+        border-radius: 12px 12px 0 0;
+    }
+
+    .form-label {
+        font-weight: bold;
+        color: #050505;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.3);
+        color: #050505;
+        border: 1px solid rgb(168, 166, 166);
+        padding: 10px;
+        border-radius: 6px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #00c3ff;
+        box-shadow: 0 0 10px rgba(0, 195, 255, 0.5);
+    }
+
+    .role-field {
+        background: rgba(255, 255, 255, 0.3);
+        color: #050505;
+        font-weight: bold;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-success, .btn-primary {
+        width: 100%;
+        transition: all 0.3s ease-in-out;
+        padding: 12px;
+        font-size: 16px;
+        margin-top: 10px;
+        border-radius: 8px;
+        border: none;
+    }
+
+    .btn-success {
+        background: #28a745;
+    }
+
+    .btn-success:hover {
+        background: #218838;
+        transform: scale(1.05);
+    }
+
+    .btn-primary {
+        background: #00c3ff;
+    }
+
+    .btn-primary:hover {
+        background: #009edb;
+        transform: scale(1.05);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="card shadow-lg">
+        <div class="card-header">Profile</div>
+        <div class="card-body">
+            <form method="POST" id="profileForm">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label">Name</label>
+                    <span id="id_username-text" class="saved-text">{{ user.username }}</span>
+                    <input type="text" class="form-control editable-input" id="id_username" value="{{ user.username }}" readonly>
+                </div>
+
+                {% if user_profile.role == "vendor" %}
+                <div class="mb-3">
+                    <label class="form-label">Brand Name</label>
+                    <span id="id_brand_name-text" class="saved-text">{{ form.brand_name.value }}</span>
+                    {% render_field form.brand_name class="form-control editable-input" id="id_brand_name" %}
+                </div>
+                {% endif %}
+
+                <div class="mb-3">
+                    <label class="form-label">Address</label>
+                    <span id="id_address-text" class="saved-text">{{ form.address.value }}</span>
+                    {% render_field form.address class="form-control editable-input" id="id_address" %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Contact (Phone Number)</label>
+                    <span id="id_contact-text" class="saved-text">{{ form.contact.value }}</span>
+                    {% render_field form.contact class="form-control editable-input" id="id_contact" %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email ID</label>
+                    <span id="id_email-text" class="saved-text">{{ form.email.value }}</span>
+                    {% render_field form.email class="form-control editable-input" id="id_email" %}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Role</label>
+                    <input type="text" class="form-control role-field" value="{{ user_profile.role }}" readonly>
+                </div>
+
+                <button type="submit" class="btn btn-success" id="saveChangesBtn" style="display: none;">Save Changes</button>
+                <button type="button" class="btn btn-primary" id="editProfileBtn">Edit Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let form = document.getElementById("profileForm");
+        let editBtn = document.getElementById("editProfileBtn");
+        let saveBtn = document.getElementById("saveChangesBtn");
+
+        let inputs = form.querySelectorAll(".editable-input");
+        let spans = form.querySelectorAll(".saved-text");
+
+        // Initially, show saved text and hide inputs
+        spans.forEach(span => span.style.display = "inline");
+        inputs.forEach(input => input.style.display = "none");
+
+        editBtn.addEventListener("click", function() {
+            spans.forEach(span => span.style.display = "none");
+            inputs.forEach(input => {
+                input.style.display = "block";
+                input.disabled = false;
+            });
+
+            saveBtn.style.display = "inline-block";
+            editBtn.style.display = "none";
+        });
+
+        saveBtn.addEventListener("click", function(event) {
+            event.preventDefault();  // Prevent form submission for now
+
+            inputs.forEach(input => {
+                let span = document.getElementById(input.id + "-text");
+                span.innerText = input.value;
+                span.style.display = "inline";
+                input.style.display = "none";
+                input.disabled = true;
+            });
+
+            saveBtn.style.display = "none";
+            editBtn.style.display = "inline-block";
+
+            form.submit();  // Now submit the form after updating UI
+        });
+    });
+</script>
+
+{% endblock %}

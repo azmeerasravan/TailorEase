@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>My Orders</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Status</th>
+                <th>Measurements</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.product.model }}</td>
+                <td>{{ order.status }}</td>
+                <td>
+                    {% if order.measurements %}
+                        Chest: {{ order.measurements.chest }}", 
+                        Waist: {{ order.measurements.waist }}", 
+                        Hips: {{ order.measurements.hips }}", 
+                        Length: {{ order.measurements.length }}"
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>₹{{ order.total_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

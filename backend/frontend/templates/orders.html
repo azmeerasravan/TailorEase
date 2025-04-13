@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center">My Orders</h2>
+
+    {% if orders %}
+    <table class="table table-striped mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Fabric</th>
+                <th>Measurements</th>
+                <th>Total Price</th>
+                <th>Status</th>
+                <th>Payment ID</th>
+                <th>Order Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>
+                    {% if order.product %}
+                        <img src="{{ order.product.image.url }}" alt="{{ order.product.name }}" width="50">
+                        {{ order.product.name }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>{{ order.fabric.name|default:"N/A" }}</td>
+                <td>
+                    {% for key, value in order.measurements.items %}
+                        <strong>{{ key }}:</strong> {{ value }}<br>
+                    {% empty %}
+                        N/A
+                    {% endfor %}
+                </td>
+                <td>${{ order.total_price }}</td>
+                <td>
+                    <span class="badge {% if order.status == 'Pending' %} bg-warning {% elif order.status == 'Shipped' %} bg-primary {% else %} bg-success {% endif %}">
+                        {{ order.status }}
+                    </span>
+                </td>
+                <td>{{ order.payment_id|default:"N/A" }}</td>
+                <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="alert alert-info text-center mt-4">You have no orders yet.</div>
+    {% endif %}
+</div>
+
+<!-- CSS Styles -->
+<style>
+    body {
+        background: url("https://png.pngtree.com/thumb_back/fh260/background/20230617/pngtree-cartoon-style-3d-render-of-shipment-truck-with-package-and-phone-image_3640191.jpg") no-repeat center center fixed;
+        background-size: cover;
+    }
+    .badge {
+        padding: 8px;
+        font-size: 14px;
+        border-radius: 5px;
+    }
+</style>
+{% endblock %}

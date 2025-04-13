@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+    body {
+        background: url("https://www.longancraft.com/cdn/shop/articles/How-to-Cut-Fabric-Straight-7-Perfect-Methods-Using-Scissors.jpg?v=1723519355") no-repeat center center fixed;
+        background-size: cover;
+        color: white;
+    }
+
+    .add-product-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .card {
+        width: 55%;
+        max-width: 650px;
+        background: rgb(168, 166, 166);
+        backdrop-filter: blur(15px);
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        padding: 25px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        animation: fadeIn 1s ease-in-out;
+        transition: all 0.4s ease-in-out;
+    }
+
+    .card:hover {
+        background: rgb(168, 166, 166);
+        backdrop-filter: blur(20px);
+        transform: scale(1.02);
+    }
+
+    .card-header {
+        background: rgba(0, 0, 0, 0.85);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        text-align: center;
+        font-size: 26px;
+        font-weight: bold;
+        padding: 15px;
+        border-radius: 12px 12px 0 0;
+        letter-spacing: 1px;
+        animation: slideIn 0.8s ease-in-out;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        padding: 12px;
+        border-radius: 8px;
+        transition: all 0.3s ease-in-out;
+        font-size: 16px;
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    .form-control::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .form-control:focus {
+        border-color: #00c3ff;
+        box-shadow: 0 0 12px rgba(0, 195, 255, 0.6);
+        transform: scale(1.02);
+    }
+
+    .btn-success, .btn-secondary {
+        width: 100%;
+        transition: all 0.3s ease-in-out;
+        padding: 14px;
+        font-size: 18px;
+        border-radius: 8px;
+        font-weight: bold;
+        border: none;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #28a745, #218838);
+        box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4);
+    }
+
+    .btn-success:hover {
+        background: linear-gradient(135deg, #218838, #1e7e34);
+        transform: scale(1.05);
+        box-shadow: 0 6px 15px rgba(40, 167, 69, 0.5);
+    }
+
+    .btn-secondary {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+    }
+
+    .card-footer {
+        padding: 15px;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="add-product-container">
+    <div class="card shadow-lg">
+        <div class="card-header">Add Fabric</div>
+        <div class="card-body">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="text-center">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </div>
+            </form>
+        </div>
+        <div class="card-footer text-center">
+            <a href="{% url 'vendor_dashboard' %}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
