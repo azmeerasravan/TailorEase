@@ -361,10 +361,10 @@ def place_order(request):
 def success(request):
     return render(request, 'success_page.html')
 
-@login_required
-def vendor_orders(request):
-    orders = Order.objects.filter(product__vendor=request.user)
-    return render(request, 'vendor_orders.html', {'orders': orders})
+# @login_required
+# def vendor_orders(request):
+#     orders = Order.objects.filter(product__vendor=request.user)
+#     return render(request, 'vendor_orders.html', {'orders': orders})
 
 
 
@@ -434,3 +434,9 @@ def delete_product(request, product_id):
 def my_orders(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, "orders.html", {"orders": orders})
+
+@login_required
+def vendor_orders_view(request):
+    vendor = request.user
+    orders = Order.objects.select_related('product', 'fabric', 'user').filter(product__vendor=vendor)
+    return render(request, 'orders_vendors.html', {'orders': orders})

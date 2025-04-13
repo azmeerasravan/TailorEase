@@ -36,7 +36,7 @@ urlpatterns = [
     path('auth/purchase/<int:product_id>/', views.purchase_product, name='purchase_product'),
     path('auth/place_order/', views.place_order, name='place_order'),
     path('auth/success_page/', views.success, name='success_page'),
-    path('auth/vendor/orders/', views.vendor_orders, name='vendor_orders'),
     path("auth/orders/", my_orders, name="orders"),
+    path('auth/vendor/orders/', views.vendor_orders_view, name='vendor_orders'),
     path('auth/customize/<int:product_id>/', views.customize_product, name='customize_product'),
 ]
