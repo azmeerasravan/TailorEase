@@ -17,9 +17,6 @@ import stripe
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-STRIPE_PUBLISHABLE_KEY = 'pk_test_51R3KaMFdIUUPWIS1jVlXyFjVQ2oxjScfJvud27fVSVtyVIJ8uKGqoDnMRXgQAY03zkd8c1AbA9DNwh0VgxB4YlIA00fyrsoYA4'
-STRIPE_SECRET_KEY = 'sk_test_51R3KaMFdIUUPWIS1CFwvEMZqo6pDMW4XU9OVMoAMsVYdRcyks6zesXLBZtSyGLnZyTaOZn3LffaeS9DN1NnYz7Zm00M9cjgj1o'
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
