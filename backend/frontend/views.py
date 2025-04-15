@@ -435,8 +435,23 @@ def my_orders(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, "orders.html", {"orders": orders})
 
+from django.shortcuts import render, redirect
+from .models import Order
+
 @login_required
 def vendor_orders_view(request):
     vendor = request.user
-    orders = Order.objects.select_related('product', 'fabric', 'user').filter(product__vendor=vendor)
+    orders = Order.objects.filter(product__vendor=vendor)
+
+    if request.method == "POST" and 'update_order' in request.POST:
+        order_id = request.POST.get('update_order')
+        new_status = request.POST.get(f'status_{order_id}')
+        try:
+            order = Order.objects.get(id=order_id, product__vendor=vendor)
+            order.status = new_status
+            order.save()
+        except Order.DoesNotExist:
+            pass
+        return redirect('vendor_orders')  # Replace with your actual URL name
+
     return render(request, 'orders_vendors.html', {'orders': orders})

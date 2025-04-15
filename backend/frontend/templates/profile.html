@@ -188,20 +188,21 @@
         });
 
         saveBtn.addEventListener("click", function(event) {
-            event.preventDefault();  // Prevent form submission for now
+            event.preventDefault();
 
+            // Just update UI text, but DO NOT disable inputs yet
             inputs.forEach(input => {
                 let span = document.getElementById(input.id + "-text");
                 span.innerText = input.value;
                 span.style.display = "inline";
                 input.style.display = "none";
-                input.disabled = true;
+                // REMOVE: input.disabled = true;
             });
 
             saveBtn.style.display = "none";
             editBtn.style.display = "inline-block";
 
-            form.submit();  // Now submit the form after updating UI
+            form.submit(); // Submit with inputs enabled
         });
     });
 </script>

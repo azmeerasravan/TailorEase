@@ -5,55 +5,65 @@
     <h2 class="text-center">Orders Received</h2>
 
     {% if orders %}
-    <table class="table table-bordered table-hover mt-4">
-        <thead class="table-dark">
-            <tr>
-                <th>Order ID</th>
-                <th>Customer</th>
-                <th>Product</th>
-                <th>Fabric</th>
-                <th>Measurements</th>
-                <th>Total Price</th>
-                <th>Status</th>
-                <th>Payment ID</th>
-                <th>Order Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for order in orders %}
-            <tr>
-                <td>{{ order.id }}</td>
-                <td>{{ order.user.username|default:"Anonymous" }}</td>
-                <td>
-                    {% if order.product %}
-                        <img src="{{ order.product.image.url }}" alt="{{ order.product.model }}" width="50">
-                        {{ order.product.model }}
-                    {% else %}
-                        N/A
-                    {% endif %}
-                </td>
-                <td>{{ order.fabric.name|default:"N/A" }}</td>
-                <td>
-                    {% if order.measurements %}
-                        {% for key, value in order.measurements.items %}
-                            <strong>{{ key }}:</strong> {{ value }}<br>
-                        {% endfor %}
-                    {% else %}
-                        N/A
-                    {% endif %}
-                </td>
-                <td>${{ order.total_price }}</td>
-                <td>
-                    <span class="badge {% if order.status == 'Pending' %} bg-warning {% elif order.status == 'Shipped' %} bg-primary {% else %} bg-success {% endif %}">
-                        {{ order.status }}
-                    </span>
-                </td>
-                <td>{{ order.payment_id|default:"N/A" }}</td>
-                <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <form method="POST">
+        {% csrf_token %}
+        <table class="table table-bordered table-hover mt-4">
+            <thead class="table-dark">
+                <tr>
+                    <th>Order ID</th>
+                    <th>Customer</th>
+                    <th>Product</th>
+                    <th>Fabric</th>
+                    <th>Measurements</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Payment ID</th>
+                    <th>Order Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.user.username|default:"Anonymous" }}</td>
+                    <td>
+                        {% if order.product %}
+                            <img src="{{ order.product.image.url }}" alt="{{ order.product.model }}" width="50">
+                            {{ order.product.model }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>{{ order.fabric.name|default:"N/A" }}</td>
+                    <td>
+                        {% if order.measurements %}
+                            {% for key, value in order.measurements.items %}
+                                <strong>{{ key }}:</strong> {{ value }}<br>
+                            {% endfor %}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>${{ order.total_price }}</td>
+                    <td>
+                        <select name="status_{{ order.id }}" class="form-select">
+                            <option value="Pending" {% if order.status == "Pending" %}selected{% endif %}>Pending</option>
+                            <option value="Shipped" {% if order.status == "Shipped" %}selected{% endif %}>Shipped</option>
+                            <option value="Delivered" {% if order.status == "Delivered" %}selected{% endif %}>Delivered</option>
+                            <option value="Cancelled" {% if order.status == "Cancelled" %}selected{% endif %}>Cancelled</option>
+                        </select>
+                    </td>
+                    <td>{{ order.payment_id|default:"N/A" }}</td>
+                    <td>{{ order.created_at|date:"M d, Y H:i" }}</td>
+                    <td>
+                        <button type="submit" name="update_order" value="{{ order.id }}" class="btn btn-primary btn-sm">Update</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
     {% else %}
     <div class="alert alert-info text-center mt-4">No orders have been received for your products yet.</div>
     {% endif %}
@@ -63,11 +73,6 @@
     body {
         background: url("https://img.freepik.com/premium-photo/warehouse-concept-multiple-boxes-delivery-parcel-background_31965-40200.jpg") no-repeat center center fixed;
         background-size: cover;
-    }
-    .badge {
-        padding: 8px;
-        font-size: 14px;
-        border-radius: 5px;
     }
 </style>
 {% endblock %}
